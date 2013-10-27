@@ -1,0 +1,13 @@
+todo
+----
+* Choreographie
+
+* Objektidentität und Classloader
+
+* Serializable --> Customizing
+  * Externalizable
+  * private void writeObject(java.io.ObjectOutputStream out) throws IOException
+  * private void readObject(java.io.ObjectInputStream in)    throws IOException, ClassNotFoundException;
+  * private void readObjectNoData()                          throws ObjectStreamException; (!) --> zeigen
+  
+* EscapeAnalysis

@@ -1,4 +1,9 @@
-package javassist;
+package de.arnohaase.javastuff.javassist;
+
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
 
 public class JavassistMain {
 	public static void main(String[] args) throws Exception {

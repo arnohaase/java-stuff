@@ -1,4 +1,4 @@
-package finalize;
+package de.arnohaase.javastuff.finalize;
 
 
 public class FinalizeBombMain {

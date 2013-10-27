@@ -1,4 +1,4 @@
-package serializable;
+package de.arnohaase.javastuff.serializable;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -1,4 +1,4 @@
-package javassist;
+package de.arnohaase.javastuff.javassist;
 
 
 public interface Greeter {

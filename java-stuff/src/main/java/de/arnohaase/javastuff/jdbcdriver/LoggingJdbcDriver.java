@@ -58,7 +58,6 @@ public class LoggingJdbcDriver implements Driver {
 		return true;
 	}
 
-    @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         return null;
     }

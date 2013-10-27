@@ -1,6 +1,6 @@
 todo
 ----
-* clean up package structure
+* maven: --> Java 1.7
 
 * Objektidentität und Classloader
 
@@ -10,7 +10,30 @@ todo
   * private void readObject(java.io.ObjectInputStream in)    throws IOException, ClassNotFoundException;
   * private void readObjectNoData()                          throws ObjectStreamException; (!) --> zeigen
   
-* EscapeAnalysis
-
 * java.util.Date vs java.sql.Date --> precision
 * many ways to create an instance
+
+* PrintWriter swallows exception
+* Guava
+* HashMap par crashes
+* weak, soft, phantom ref
+  * weak:
+  * soft: cache --> configurable limit
+  * phantom: detect resource leak (instead of finalize)
+* Lombok
+* ProtoBuf
+* aggregating total and count in Map
+  * concurrent: thread safe update ---> volatile
+  * race condition on initializing map --> double checked locking
+  * atomic --> AtomicReference
+* == type safe
+* demonstrate escape analysis
+
+* install -XX:+PrintAssembly
+
+* sun.misc.Unsafe
+
+* Character Encodings, CharSet
+* Obstacles for Class Unloading
+
+* Callback with generic exception

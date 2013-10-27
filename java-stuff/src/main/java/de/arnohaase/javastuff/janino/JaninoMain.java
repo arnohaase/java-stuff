@@ -1,4 +1,4 @@
-package janino;
+package de.arnohaase.javastuff.janino;
 
 import org.codehaus.janino.ExpressionEvaluator;
 

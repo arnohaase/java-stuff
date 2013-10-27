@@ -1,4 +1,4 @@
-package parameternames;
+package de.arnohaase.javastuff.parameternames;
 
 import java.lang.reflect.Method;
 

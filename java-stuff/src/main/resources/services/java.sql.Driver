@@ -1,1 +1,1 @@
-jdbcdriver.LoggingJdbcDriver
+de.arnohaase.javastuff.jdbcdriver.LoggingJdbcDriver

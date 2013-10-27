@@ -1,6 +1,6 @@
 todo
 ----
-* Choreographie
+* clean up package structure
 
 * Objektidentität und Classloader
 
@@ -11,3 +11,6 @@ todo
   * private void readObjectNoData()                          throws ObjectStreamException; (!) --> zeigen
   
 * EscapeAnalysis
+
+* java.util.Date vs java.sql.Date --> precision
+* many ways to create an instance

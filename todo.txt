@@ -27,9 +27,13 @@ todo
 * Guava
 * ProtoBuf
 * aggregating total and count in Map
+  * initial: NumAndCount-Klasse mit synchronized (Race Condition beim Initialisieren außer Acht gelassen)
+    * --> Umbau auf lock-frei
   * concurrent: thread safe update ---> volatile
   * race condition on initializing map --> double checked locking
   * atomic --> AtomicReference
+
+  * Messungen zum Vergleich --> wie?
 
 * Character Encodings, CharSet
 * Obstacles for Class Unloading
@@ -38,5 +42,3 @@ todo
 
 * stand-alone soap
 * JDI
-
-* cost of synchronized (uncontested / contested)

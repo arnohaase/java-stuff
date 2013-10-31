@@ -1,11 +1,11 @@
-package de.arnohaase.javastuff.hashset_not_threadsafe;
+package de.arnohaase.javastuff.hashmap_not_threadsafe;
 
 import java.util.*;
 
 /**
  * @author arno
  */
-public class HashSetMultiThreadMain {
+public class HashMapMultiThreadMain {
     public static void main(String[] args) throws InterruptedException {
 //        final Map<String, String> crashMap = new ConcurrentHashMap<String, String>();
         final Map<String, String> crashMap = new HashMap<String, String>();
@@ -13,9 +13,9 @@ public class HashSetMultiThreadMain {
 		for(int i = 0; i < 10; i++){
 			new Thread(new Runnable() {
 				@Override public void run() {
-					for(int i = 0; i < 10000; i++){
+					for(int i = 0; i < 10_000; i++){
 						crashMap.put("foo" + UUID.randomUUID().toString(), "bar");
-						crashMap.remove("foo"+i);
+						crashMap.remove("foo" + i);
 					}
 					System.out.println("[Thread "+Thread.currentThread().getName()+"] End: " + new Date());
 				}

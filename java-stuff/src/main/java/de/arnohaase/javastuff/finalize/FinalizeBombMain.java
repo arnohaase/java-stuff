@@ -1,26 +1,36 @@
 package de.arnohaase.javastuff.finalize;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class FinalizeBombMain {
 	public static void main(String[] args) throws Exception {
-		for (int i=0; i<1000; i++) {
-			new Bomb();
-		}
-		
-		int i=0;
-		while (true) {
-			if (i%10000 == 0) {
-				System.out.println(Runtime.getRuntime().freeMemory());
+        final List<Object> l = new ArrayList<>();
+
+        int i=0;
+		while(true) {
+            i+=1;
+			l.add(new Bomb());
+            l.clear();
+			if (i%1_000_000 == 0) {
+				System.out.println(Bomb.count.get() + ": " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024);
 			}
 		}
 	}
 }
 
 class Bomb {
-	@Override
-	protected void finalize() throws Throwable {
-		for (int i=0; i<1000; i++) {
-			new Bomb();
-		}
-	}
+    final static AtomicInteger count = new AtomicInteger();
+
+    public Bomb() {
+        count.incrementAndGet();
+//        System.out.println("ctor");
+    }
+//	@Override
+//	protected void finalize() throws Throwable {
+//        new Bomb();
+//        count.decrementAndGet();
+//	}
 }

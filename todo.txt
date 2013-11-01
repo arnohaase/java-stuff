@@ -1,8 +1,9 @@
 todo
 ----
+* JDI
+
 * annotation processor
 * Lombok
-* sun.misc.Unsafe
 
 * Objektidentität und Classloader
 
@@ -12,7 +13,7 @@ todo
   * private void readObject(java.io.ObjectInputStream in)    throws IOException, ClassNotFoundException;
   * private void readObjectNoData()                          throws ObjectStreamException; (!) --> zeigen
   
-* many ways to create an instance
+* ways to create an instance
   * ctor
   * static factory method
   * Builder
@@ -26,19 +27,7 @@ todo
 
 * Guava
 * ProtoBuf
-* aggregating total and count in Map
-  * initial: NumAndCount-Klasse mit synchronized (Race Condition beim Initialisieren außer Acht gelassen)
-    * --> Umbau auf lock-frei
-  * concurrent: thread safe update ---> volatile
-  * race condition on initializing map --> double checked locking
-  * atomic --> AtomicReference
-
-  * Messungen zum Vergleich --> wie?
 
 * Character Encodings, CharSet
 * Obstacles for Class Unloading
 
-* partial order
-
-* stand-alone soap
-* JDI

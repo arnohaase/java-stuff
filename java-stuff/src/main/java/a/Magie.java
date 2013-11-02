@@ -8,10 +8,10 @@ public class Magie {
 		final Field charField = String.class.getDeclaredField ("value");
 		charField.setAccessible (true);
 		final char[] hallo = (char[]) charField.get ("Hallo, Welt!");
-		System.arraycopy ("Und tschüs!".toCharArray(), 0, hallo, 0, 11);
+		System.arraycopy ("Und tschÃ¼s!".toCharArray(), 0, hallo, 0, 11);
 		
 		final Field lenField = String.class.getDeclaredField ("count");
 		lenField.setAccessible (true);
-		lenField.set ("Hallo, Welt!", "Und tschüs!".length());
+		lenField.set ("Hallo, Welt!", "Und tschÃ¼s!".length());
 	}
 }

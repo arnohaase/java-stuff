@@ -1,5 +1,6 @@
 package de.arnohaase.javastuff.finalize;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,10 +13,13 @@ public class FinalizeBombMain {
         int i=0;
 		while(true) {
             i+=1;
-			l.add(new Bomb());
-            l.clear();
+
+            new Bomb();
+
+//			l.add(new Bomb());
+//            l.clear();
 			if (i%1_000_000 == 0) {
-				System.out.println(Bomb.count.get() + ": " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024);
+				System.out.println(NumberFormat.getIntegerInstance().format(Bomb.count.get()) + ": " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024);
 			}
 		}
 	}
@@ -30,7 +34,7 @@ class Bomb {
     }
 //	@Override
 //	protected void finalize() throws Throwable {
-//        new Bomb();
-//        count.decrementAndGet();
+////        new Bomb();
+//        count.get();
 //	}
 }

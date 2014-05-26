@@ -1,10 +1,13 @@
 package de.arnohaase.javastuff.jdbcdriver;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -12,13 +15,13 @@ import java.util.logging.Logger;
 public class LoggingJdbcDriver implements Driver {
 	public static final String PREFIX = "jdbc:logger:";
 	
-	static {
-		try {
-			DriverManager.registerDriver(new LoggingJdbcDriver());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+//	static {
+//		try {
+//			DriverManager.registerDriver(new LoggingJdbcDriver());
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	@Override
 	public Connection connect(String url, Properties info) throws SQLException {
@@ -72,16 +75,21 @@ class LoggingInvocationHandler implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		final Object result = method.invoke(inner, args);
-		
-		System.out.println("invoking " + method + ": " + (args != null ? Arrays.asList(args) : "") + " -> " + result);
-		if (result == null) {
-			return null;
-		}
-		
-		if (method.getReturnType().isInterface()) {
-			return Proxy.newProxyInstance(result.getClass().getClassLoader(), new Class[] {method.getReturnType()}, new LoggingInvocationHandler(result));
-		}
-		return result;
+        try {
+            final Object result = method.invoke(inner, args);
+
+            System.out.println("invoking " + method + ": " + (args != null ? Arrays.asList(args) : "") + " -> " + result);
+            if (result == null) {
+                return null;
+            }
+
+            if (method.getReturnType().isInterface()) {
+                return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {method.getReturnType()}, new LoggingInvocationHandler(result));
+            }
+            return result;
+        }
+        catch(InvocationTargetException exc) {
+            throw exc.getCause();
+        }
 	}
 }

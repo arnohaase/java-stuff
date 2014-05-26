@@ -26,3 +26,4 @@ todo
 * Character Encodings, CharSet
 * Obstacles for Class Unloading
 
+* GC-Logging per Callback von JMX

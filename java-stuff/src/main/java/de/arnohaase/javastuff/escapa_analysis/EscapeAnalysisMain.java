@@ -37,6 +37,7 @@ class IntHelper {
 }
 
 class RichInt {
+    private int i;
     private final int value;
 
     public RichInt(int value) {
@@ -50,4 +51,9 @@ class RichInt {
     public boolean isDivisibleBy(int i) {
         return value % i == 0;
     }
+
+//    @Override
+//    protected void finalize() throws Throwable {
+//        i = 1;
+//    }
 }

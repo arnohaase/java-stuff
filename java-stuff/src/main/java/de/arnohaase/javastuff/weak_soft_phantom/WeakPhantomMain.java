@@ -9,10 +9,10 @@ import java.lang.ref.WeakReference;
  * @author arno
  */
 public class WeakPhantomMain {
-    static final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
+    static final ReferenceQueue<Object> queue = new ReferenceQueue<>();
 
     public static void main(String[] args) throws Exception {
-        final Reference<Object> ref = new WeakReference<Object>(new WithFinalize(), queue);
+        final Reference<WithFinalize> ref = new PhantomReference<>(new WithFinalize(), queue);
 //        PhantomReference
 
         System.out.println("initial: " + ref.get());

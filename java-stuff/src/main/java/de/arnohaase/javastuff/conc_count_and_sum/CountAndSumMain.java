@@ -1,11 +1,14 @@
 package de.arnohaase.javastuff.conc_count_and_sum;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author arno
@@ -20,6 +23,8 @@ public class CountAndSumMain {
 
     public static void main(String[] args) throws Exception {
         System.out.println("#threads: " + NUM_THREADS + ", #keys: " + NUM_KEYS + ", #reads: " + NUM_READS);
+        doSync();
+        doLockFree();
         doSync();
         doLockFree();
     }
@@ -55,7 +60,7 @@ public class CountAndSumMain {
         for(int i=0; i<NUM_THREADS; i++) {
             new MapThread(latch) {
                 @Override void read(String key) {
-                    mapRef.get(key).get().getSum();
+                    mapRef.get(key).get().getAverage();
                 }
 
                 @Override void write(String key, int value) {
@@ -75,7 +80,7 @@ public class CountAndSumMain {
         for(int i=0; i<NUM_THREADS; i++) {
             new MapThread(latch) {
                 @Override void read(String key) {
-                    mapSync.get(key).getSum();
+                    mapSync.get(key).getAverage();
                 }
 
                 @Override void write(String key, int value) {
@@ -119,6 +124,8 @@ public class CountAndSumMain {
 }
 
 class CountAndSumSync {
+//    private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
+
     private int count = 1;
     private int sum;
 
@@ -126,6 +133,48 @@ class CountAndSumSync {
         sum = initialValue;
     }
 
+//    public void add(int value) {
+//        lock.writeLock().lock();
+//        try {
+//            count += 1;
+//            sum += value;
+//        }
+//        finally {
+//            lock.writeLock().unlock();
+//        }
+//    }
+//
+//    // Unschärfe durch separate Getter: hier uninteressant, einfach lösbar durch gemeinsamen Getter
+//    public int getCount() {
+//        lock.readLock().lock();
+//        try {
+//            return count;
+//        }
+//        finally {
+//            lock.readLock().unlock();
+//        }
+//    }
+//
+//    public int getSum() {
+//        lock.readLock().lock();
+//        try {
+//            return sum;
+//        }
+//        finally {
+//            lock.readLock().unlock();
+//        }
+//    }
+//
+//    public synchronized double getAverage() {
+//        lock.readLock().lock();
+//        try {
+//            if(count == 0) return 0;
+//            return sum / count;
+//        }
+//        finally {
+//            lock.readLock().unlock();
+//        }
+//    }
     public synchronized void add(int value) {
         count += 1;
         sum += value;
@@ -138,6 +187,11 @@ class CountAndSumSync {
 
     public synchronized int getSum() {
         return sum;
+    }
+
+    public synchronized double getAverage() {
+        if(count == 0) return 0;
+        return sum / count;
     }
 }
 
@@ -164,5 +218,10 @@ class CountAndSumFinal {
 
     int getSum() {
         return sum;
+    }
+
+    double getAverage() {
+        if(count == 0) return 0;
+        return 1.0 * sum / count;
     }
 }

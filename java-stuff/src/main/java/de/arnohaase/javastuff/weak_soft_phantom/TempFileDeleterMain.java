@@ -6,8 +6,10 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author arno
@@ -40,14 +42,18 @@ public class TempFileDeleterMain {
 
 class TempFileDeleter {
     private final ReferenceQueue<File> queue = new ReferenceQueue<>();
-    private Set<FileRef> refs = new HashSet<>();
+    private Set<FileRef> refs = Collections.newSetFromMap(new ConcurrentHashMap<FileRef, Boolean>());
 
-    public synchronized void register(File f) {
+    public void register(File f) {
         deleteUnused();
         refs.add(new FileRef(f, queue));
     }
+    public void unregister(File f) {
+        deleteUnused();
+        refs.remove(new FileRef(f, queue));
+    }
 
-    public synchronized void cleanup() {
+    public void cleanup() {
         deleteUnused();
     }
 
@@ -72,6 +78,19 @@ class TempFileDeleter {
 
         private String getPath() {
             return path;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(! (obj instanceof FileRef)) {
+                return false;
+            }
+            return ((FileRef)obj).path.equals(path);
+        }
+
+        @Override
+        public int hashCode() {
+            return path.hashCode();
         }
     }
 }

@@ -8,14 +8,16 @@ import java.sql.ResultSet;
 
 public class LoggingJdbcDriverMain {
 	public static void main(String[] args) throws Exception {
-//		DriverManager.registerDriver(new LoggingJdbcDriver());
+        org.h2.tools.Server.main(new String[] {"-tcp", "-web"});
+
+        DriverManager.registerDriver(new LoggingJdbcDriver());
 		
 		final Connection conn = DriverManager.getConnection("jdbc:logger:jdbc:h2:tcp://localhost/omd", "sa", "");
-		final PreparedStatement stmt = conn.prepareStatement("select * from TBLUSERPROFILE where oid > ?");
-		stmt.setLong(1, 2L);
+		final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.TABLES where table_name like ?");
+		stmt.setString(1, "I%");
 		final ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			System.out.println(rs.getString("userid"));
+			System.out.println(rs.getString("TABLE_NAME"));
 		}
 		conn.close();
 	}

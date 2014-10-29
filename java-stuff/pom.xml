@@ -20,6 +20,11 @@
         <!--</dependency>-->
 
         <dependency>
+            <groupId>com.ajjpj.a-base</groupId>
+            <artifactId>a-base</artifactId>
+            <version>1.0-pre9</version>
+        </dependency>
+        <dependency>
             <groupId>com.thoughtworks.paranamer</groupId>
             <artifactId>paranamer</artifactId>
             <version>2.6</version>
@@ -50,6 +55,16 @@
             <version>1.12.2</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>5.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.3.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -59,8 +74,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
                 <executions>
                     <execution>

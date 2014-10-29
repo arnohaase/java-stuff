@@ -1,5 +1,7 @@
 todo
 ----
+* default-Methoden von Interfaces --> Mixins / trait-artig
+
 * Objektidentität und Classloader
 
 * Serializable --> Customizing

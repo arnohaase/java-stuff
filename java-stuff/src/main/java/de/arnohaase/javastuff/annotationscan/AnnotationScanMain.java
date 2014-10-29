@@ -4,6 +4,13 @@ import com.impetus.annovention.ClasspathDiscoverer;
 import com.impetus.annovention.Discoverer;
 import com.impetus.annovention.listener.ClassAnnotationDiscoveryListener;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+
 
 public class AnnotationScanMain {
 	// http://code.google.com/p/annovention/
@@ -13,8 +20,8 @@ public class AnnotationScanMain {
 //				System.out.println("yeah!");
 //			}
 //		}
-		
-		final Discoverer discoverer = new ClasspathDiscoverer();
+
+        final Discoverer discoverer = new ClasspathDiscoverer();
 		discoverer.addAnnotationListener(new ClassAnnotationDiscoveryListener() {
 			@Override
 			public String[] supportedAnnotations() {
@@ -28,4 +35,5 @@ public class AnnotationScanMain {
 		});
 		discoverer.discover(true, false, false, true, false);
 	}
+
 }

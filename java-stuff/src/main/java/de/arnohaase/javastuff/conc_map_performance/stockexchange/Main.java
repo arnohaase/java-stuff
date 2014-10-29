@@ -4,6 +4,7 @@ import de.arnohaase.javastuff.conc_map_performance.stockexchange.impl.*;
 import javafx.util.Pair;
 
 import java.text.NumberFormat;
+import java.util.LinkedList;
 
 
 /**
@@ -21,12 +22,12 @@ public class Main {
 //            testMultiThreaded (new ReadWriteLockStockExchange ());
 //            testMultiThreaded (new ConcHashMapStockExchange ());
 //            testMultiThreaded (new SyncHashMapStockExchange ());
-//            testMultiThreaded (new AMapStockExchange ());
+            testMultiThreaded (new AMapStockExchange ());
 //            testMultiThreaded (new AMapLossyStockExchange ());
 
             // only one of these can be run safely in a single process, process must be killed manually
 
-            testWorkerThread (new SingleWorkerThreadRingBufferStockExchange ());
+//            testWorkerThread (new SingleWorkerThreadRingBufferStockExchange ());
 //            testWorkerThread (new SingleWorkerThreadLinkedBlockingDequeStockExchange());
         }
         catch(Exception exc) {
@@ -37,12 +38,13 @@ public class Main {
         }
     }
 
-    static final int NUM_WRITERS = 1;
-    static final int NUM_READERS = 10;
+    static final int NUM_WRITERS = 2;
+    static final int NUM_READERS = 2;
 
-    static void testWorkerThread (StockExchange stockExchange) {
+    static void testWorkerThread (StockExchange stockExchange) throws InterruptedException {
         System.out.println (stockExchange.getClass ().getSimpleName () + ", " + NUM_WRITERS + " writers, " + NUM_READERS + " readers");
         new TestBed (stockExchange).measureWorkerThread (NUM_WRITERS, NUM_READERS);
+        Thread.sleep (100_000);
     }
 
     static void testMultiThreaded (StockExchange stockExchange) throws InterruptedException {
@@ -73,9 +75,9 @@ public class Main {
 
     static void testSingleThreaded (StockExchange stockExchange) {
         final TestBed testBed = new TestBed (stockExchange);
-        testBed.measureSingleThreaded (); // warm up
+        testBed.measureSingleThreaded (new LinkedList ()); // warm up
 
-        final Pair<Long, Long> duration = testBed.measureSingleThreaded ();
+        final Pair<Long, Long> duration = testBed.measureSingleThreaded (new LinkedList ());
         System.out.println (formatted (duration.getKey ()) + " ms / " + formatted (duration.getValue ()) + " ms");
     }
 }

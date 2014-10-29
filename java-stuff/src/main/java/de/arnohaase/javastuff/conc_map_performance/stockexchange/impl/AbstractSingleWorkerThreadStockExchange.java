@@ -2,11 +2,14 @@ package de.arnohaase.javastuff.conc_map_performance.stockexchange.impl;
 
 import de.arnohaase.javastuff.conc_map_performance.stockexchange.StockExchange;
 
+import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 
 
 /**
@@ -24,16 +27,22 @@ public class AbstractSingleWorkerThreadStockExchange implements StockExchange {
     private int numWrites = 0;
     private int numReads = 0;
 
+    public final CountDownLatch latch = new CountDownLatch (1);
+
     public AbstractSingleWorkerThreadStockExchange (BlockingQueue<Runnable> queue) {
         this.queue = queue;
         new Thread(() -> {
-            while (true) {
-                try {
+            try {
+                latch.await ();
+                for (int i=0; i<10_000; i++) { // warm up CPU
+                    new SecureRandom ().nextBytes (new byte[1000]);
+                }
+                while (true) {
                     queue.take ().run ();
                 }
-                catch (InterruptedException e) {
-                    e.printStackTrace ();
-                }
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace ();
             }
         }).start();
     }

@@ -17,7 +17,7 @@ public class SingleWorkerThreadRingBufferStockExchange extends AbstractSingleWor
 }
 
 class RingBufferQueue implements BlockingQueue<Runnable> {
-    static final int SIZE = 1_000_000;
+    static final int SIZE = 30_000_000;
     final Runnable[] buffer = new Runnable[SIZE];
 
     volatile int readPointer = 0;

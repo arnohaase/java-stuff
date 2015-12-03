@@ -14,7 +14,7 @@ public class NonAtomicIncMain2 {
         }
 
         while(true) {
-//            Thread.sleep(100);
+            Thread.sleep(100);
             for(A a: arr) {
 //                int i = a.b;
                 System.out.print(String.format("%4d", a.a));
@@ -26,7 +26,7 @@ public class NonAtomicIncMain2 {
 
 class A implements Runnable {
     public int a;
-//    public volatile int b;
+    public volatile int b;
 
     @Override
     public void run() {

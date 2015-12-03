@@ -22,12 +22,12 @@ public class Main {
 //            testMultiThreaded (new ReadWriteLockStockExchange ());
 //            testMultiThreaded (new ConcHashMapStockExchange ());
 //            testMultiThreaded (new SyncHashMapStockExchange ());
-            testMultiThreaded (new AMapStockExchange ());
+//            testMultiThreaded (new AMapStockExchange ());
 //            testMultiThreaded (new AMapLossyStockExchange ());
 
             // only one of these can be run safely in a single process, process must be killed manually
 
-//            testWorkerThread (new SingleWorkerThreadRingBufferStockExchange ());
+            testWorkerThread (new SingleWorkerThreadRingBufferStockExchange ());
 //            testWorkerThread (new SingleWorkerThreadLinkedBlockingDequeStockExchange());
         }
         catch(Exception exc) {
@@ -44,7 +44,6 @@ public class Main {
     static void testWorkerThread (StockExchange stockExchange) throws InterruptedException {
         System.out.println (stockExchange.getClass ().getSimpleName () + ", " + NUM_WRITERS + " writers, " + NUM_READERS + " readers");
         new TestBed (stockExchange).measureWorkerThread (NUM_WRITERS, NUM_READERS);
-        Thread.sleep (100_000);
     }
 
     static void testMultiThreaded (StockExchange stockExchange) throws InterruptedException {
@@ -52,20 +51,23 @@ public class Main {
 
         System.out.println (stockExchange.getClass ().getSimpleName () + "\t\tw/s\tr/s");
         for (int i=1; i<20; i++) {
-            doMeasure (testBed, i, i);
+            doMeasure (testBed, i, i, 0);
+        }
+//        for (int i=1; i<20; i++) {
+//            doMeasure (testBed, 1, i, 100_000);
+//        }
+        for (int i=1; i<20; i++) {
+            doMeasure (testBed, 1, i, 0);
         }
         for (int i=1; i<20; i++) {
-            doMeasure (testBed, 1, i);
-        }
-        for (int i=1; i<20; i++) {
-            doMeasure (testBed, i, 1);
+            doMeasure (testBed, i, 1, 0);
         }
     }
 
-    static void doMeasure (TestBed testBed, int numWriters, int numReaders) throws InterruptedException {
-        final Pair<Long, Long> duration = testBed.measureMultiThreaded (numWriters, numReaders);
-        System.out.println (numWriters + "\t" + numReaders + "\t" +
-                formatted (TestBed.NUM_ITERATIONS *  30 * 1000L * numWriters / duration.getKey   ()) + "\t" +
+    static void doMeasure (TestBed testBed, int numWriters, int numReaders, int numWait) throws InterruptedException {
+        final Pair<Long, Long> duration = testBed.measureMultiThreaded (numWriters, numReaders, numWait);
+        System.out.println (numWriters + "\t" + numReaders + "\t" + numWait + "\t" +
+                formatted ((TestBed.NUM_ITERATIONS / (numWait+1)) *  30 * 1000L * numWriters / (duration.getKey() > 0 ? duration.getKey () : 1)) + "\t" +
                 formatted (TestBed.NUM_ITERATIONS * 200 * 1000L * numReaders / duration.getValue ()));
     }
 

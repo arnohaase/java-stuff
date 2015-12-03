@@ -22,7 +22,6 @@ class RingBufferQueue implements BlockingQueue<Runnable> {
 
     volatile int readPointer = 0;
     volatile int writePointer = 0;
-    volatile AtomicBoolean writeLock = new AtomicBoolean (false);
 
     @Override public Runnable take () throws InterruptedException {
         while (readPointer == writePointer) {} // active wait
@@ -40,15 +39,11 @@ class RingBufferQueue implements BlockingQueue<Runnable> {
         return (i-j + SIZE) % SIZE;
     }
 
-    @Override public void put (Runnable runnable) throws InterruptedException {
-        while (! writeLock.compareAndSet (false, true)); // spin lock for exclusive write access
-
-        while (diff (readPointer, writePointer) == 1); // active wait to prevent ring buffer wraparound
+    @Override public synchronized void put (Runnable runnable) throws InterruptedException {
+        while (diff (readPointer, writePointer) == 1) Thread.sleep (1); // active wait to prevent ring buffer wraparound
 
         buffer[writePointer] = runnable;
         writePointer = inc (writePointer);
-
-        writeLock.set (false);
     }
 
     //----------------------------------------------------------------------------------------------------------------------------------

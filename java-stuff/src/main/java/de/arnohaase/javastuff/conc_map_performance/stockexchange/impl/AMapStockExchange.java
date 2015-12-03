@@ -1,7 +1,7 @@
 package de.arnohaase.javastuff.conc_map_performance.stockexchange.impl;
 
-import com.ajjpj.abase.collection.immutable.AHashMap;
-import com.ajjpj.abase.collection.immutable.AMap;
+import com.ajjpj.afoundation.collection.immutable.AHashMap;
+import com.ajjpj.afoundation.collection.immutable.AMap;
 import de.arnohaase.javastuff.conc_map_performance.stockexchange.StockExchange;
 
 import java.util.Currency;

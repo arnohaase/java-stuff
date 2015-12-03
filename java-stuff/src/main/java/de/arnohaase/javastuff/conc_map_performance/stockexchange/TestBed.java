@@ -3,6 +3,7 @@ package de.arnohaase.javastuff.conc_map_performance.stockexchange;
 import de.arnohaase.javastuff.conc_map_performance.stockexchange.impl.AbstractSingleWorkerThreadStockExchange;
 import javafx.util.Pair;
 
+import java.security.SecureRandom;
 import java.util.Currency;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,7 +76,15 @@ public class TestBed {
             }
         }
 
+        for (int i=0; i<10; i++) {
+            new Thread(() -> {
+                final LinkedList ll = new LinkedList();
+                while(true) updateRates(ll);
+            }).start();
+        }
+
         ((AbstractSingleWorkerThreadStockExchange) stockExchange).latch.countDown ();
+
 
         while (true) {
             updateRates (l);
@@ -91,7 +100,7 @@ public class TestBed {
         return l.remove ();
     }
 
-    public Pair<Long, Long> measureMultiThreaded (int numWriters, int numReaders) throws InterruptedException {
+    public Pair<Long, Long> measureMultiThreaded (int numWriters, int numReaders, int numWriteWaits) throws InterruptedException {
         shutdown = false;
 
         final CountDownLatch latch = new CountDownLatch (numReaders + numWriters - 2);
@@ -124,9 +133,9 @@ public class TestBed {
 
         final Thread writeMeasurer = new Thread (() -> {
             LinkedList l = new LinkedList ();
-            writeLoop(l);
+            writeLoop(l, numWriteWaits);
             final long start = System.currentTimeMillis ();
-            writeLoop(l);
+            writeLoop(l, numWriteWaits);
             writeMillis.set (System.currentTimeMillis () - start);
             finishedCounter.incrementAndGet ();
             while (finishedCounter.get () == 1) {
@@ -159,17 +168,19 @@ public class TestBed {
 
     public Pair<Long, Long> measureSingleThreaded (LinkedList l) {
         final long start = System.currentTimeMillis ();
-        writeLoop(l);
+        writeLoop(l,0);
         final long middle = System.currentTimeMillis ();
         readLoop (l);
         final long end = System.currentTimeMillis ();
         return new Pair<> (middle-start, end-middle);
     }
 
-    private void writeLoop(LinkedList l) {
-        for (int i=0; i<NUM_ITERATIONS; i++) {
+    private void writeLoop(LinkedList l, int wait) {
+        for (int i=0; i<NUM_ITERATIONS / (wait+1); i++) {
             updateRates(l);
             updatePrices (l);
+            for (int c=0 ; c<wait;c++)
+                new SecureRandom().nextBytes (new byte[100]);
         }
     }
 

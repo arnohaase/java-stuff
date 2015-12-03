@@ -44,8 +44,6 @@ public class UnsafeMain {
 
         System.out.println(s.b);
 
-
-
         for(int i=0; i<100; i++) {
             new Thread() {
                 @Override public void run() {

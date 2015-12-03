@@ -1,5 +1,8 @@
 todo
 ----
+* @contended
+* dynamic class loading (javassist-Doku)
+
 * default-Methoden von Interfaces --> Mixins / trait-artig
 
 * Objektidentität und Classloader
@@ -29,3 +32,5 @@ todo
 * Obstacles for Class Unloading
 
 * GC-Logging per Callback von JMX
+
+* sun.misc.VM

@@ -1,7 +1,6 @@
 package de.arnohaase.javastuff.configparser;
 
 
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class ConfigParser {
@@ -43,7 +42,7 @@ public class ConfigParser {
         if (lookahead("seconds") || lookahead("s")) {
             return new DurationExpr(value, TimeUnit.SECONDS);
         }
-        if (lookahead("milliseconds") || lookahead("millis")) {
+        if (lookahead("milliseconds") || lookahead("millis") || lookahead("ms")) {
             return new DurationExpr(value, TimeUnit.MILLISECONDS);
         }
         if (lookahead("minutes") || lookahead("min")) {
@@ -106,9 +105,7 @@ public class ConfigParser {
         while (! eof() && Character.isDigit(text.charAt(offs))) {
             offs += 1;
         }
-        final long result = Long.parseLong(text.substring(start, offs));
-        consumeWhitespace();
-        return result;
+        return Long.parseLong(text.substring(start, offs));
     }
 
     void consumeWhitespace() {
@@ -123,7 +120,6 @@ public class ConfigParser {
 }
 
 interface Expr {
-    long eval(Properties props);
 }
 
 class BinaryExpr implements Expr {
@@ -140,16 +136,6 @@ class BinaryExpr implements Expr {
     @Override public String toString() {
         return "(" + left + ")" + operator + "(" + right + ")";
     }
-
-    @Override public long eval(Properties props) {
-        switch(operator) {
-            case "+": return left.eval(props) + right.eval(props);
-            case "-": return left.eval(props) - right.eval(props);
-            case "*": return left.eval(props) * right.eval(props);
-            case "/": return left.eval(props) / right.eval(props);
-            default: throw new IllegalStateException("unsupported operator " + operator);
-        }
-    }
 }
 
 class DurationExpr implements Expr {
@@ -164,10 +150,6 @@ class DurationExpr implements Expr {
     @Override public String toString() {
         return value + " " + timeUnit;
     }
-
-    @Override public long eval(Properties props) {
-        return timeUnit.toMillis(value.eval(props));
-    }
 }
 
 class LongExpr implements Expr {
@@ -180,10 +162,6 @@ class LongExpr implements Expr {
     @Override public String toString() {
         return String.valueOf(value);
     }
-
-    @Override public long eval(Properties props) {
-        return value;
-    }
 }
 
 class PropExpr implements Expr {
@@ -195,9 +173,5 @@ class PropExpr implements Expr {
 
     @Override public String toString() {
         return "${" + propName + "}";
-    }
-
-    @Override public long eval(Properties props) {
-        return new ConfigParser(props.getProperty(propName)).parseExpression().eval(props);
     }
 }

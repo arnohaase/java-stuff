@@ -1,62 +1,62 @@
 package de.arnohaase.javastuff.configparser;
 
-
 import java.util.concurrent.TimeUnit;
 
-public class ConfigParser {
+
+public class TimeoutParser {
     private final String text;
     private int offs = 0;
 
-    public ConfigParser(String text) {
+    public TimeoutParser(String text) {
         this.text = text;
     }
 
-    public Expr parseExpression() {
+    public Expression parseExpression() {
         return parseAdditiveExpression();
     }
 
-    Expr parseAdditiveExpression() {
-        final Expr left = parseMultiplicativeExpression();
+    Expression parseAdditiveExpression() {
+        final Expression left = parseMultiplicativeExpression();
         if (lookahead("+")) {
-            return new BinaryExpr("+", left, parseMultiplicativeExpression());
+            return new BinaryExpression("+", left, parseMultiplicativeExpression());
         }
         if (lookahead("-")) {
-            return new BinaryExpr("-", left, parseMultiplicativeExpression());
+            return new BinaryExpression("-", left, parseMultiplicativeExpression());
         }
         return left;
     }
 
-    Expr parseMultiplicativeExpression() {
-        final Expr left = parsePrimitiveExpressionWithTimeUnit();
+    Expression parseMultiplicativeExpression() {
+        final Expression left = parsePrimitiveExpressionWithTimeUnit();
         if (lookahead("*")) {
-            return new BinaryExpr("*", left, parsePrimitiveExpressionWithTimeUnit());
+            return new BinaryExpression("*", left, parsePrimitiveExpressionWithTimeUnit());
         }
         if (lookahead("/")) {
-            return new BinaryExpr("/", left, parsePrimitiveExpressionWithTimeUnit());
+            return new BinaryExpression("/", left, parsePrimitiveExpressionWithTimeUnit());
         }
         return left;
     }
 
-    Expr parsePrimitiveExpressionWithTimeUnit() {
-        final Expr value = parsePrimitiveExpression();
+    Expression parsePrimitiveExpressionWithTimeUnit() {
+        final Expression value = parsePrimitiveExpression();
         if (lookahead("seconds") || lookahead("s")) {
-            return new DurationExpr(value, TimeUnit.SECONDS);
+            return new DurationExpression(value, TimeUnit.SECONDS);
         }
         if (lookahead("milliseconds") || lookahead("millis") || lookahead("ms")) {
-            return new DurationExpr(value, TimeUnit.MILLISECONDS);
+            return new DurationExpression(value, TimeUnit.MILLISECONDS);
         }
         if (lookahead("minutes") || lookahead("min")) {
-            return new DurationExpr(value, TimeUnit.MINUTES);
+            return new DurationExpression(value, TimeUnit.MINUTES);
         }
         return value;
     }
 
-    Expr parsePrimitiveExpression() {
+    Expression parsePrimitiveExpression() {
         if (Character.isDigit(nextChar())) {
-            return new LongExpr(parseLong());
+            return new LongExpression(parseLong());
         }
         if (lookahead("(")) {
-            final Expr result = parseExpression();
+            final Expression result = parseExpression();
             consume(")");
             return result;
         }
@@ -65,7 +65,7 @@ public class ConfigParser {
             while (!eof() && text.charAt(offs)!='}') {
                 offs += 1;
             }
-            final Expr result = new PropExpr(text.substring(start, offs));
+            final Expression result = new PropExpression(text.substring(start, offs));
             consume("}");
             return result;
         }
@@ -119,15 +119,14 @@ public class ConfigParser {
     }
 }
 
-interface Expr {
-}
+interface Expression {}
 
-class BinaryExpr implements Expr {
+class BinaryExpression implements Expression {
     public final String operator;
-    public final Expr left;
-    public final Expr right;
+    public final Expression left;
+    public final Expression right;
 
-    public BinaryExpr(String operator, Expr left, Expr right) {
+    public BinaryExpression(String operator, Expression left, Expression right) {
         this.operator = operator;
         this.left = left;
         this.right = right;
@@ -138,11 +137,11 @@ class BinaryExpr implements Expr {
     }
 }
 
-class DurationExpr implements Expr {
-    public final Expr value;
+class DurationExpression implements Expression {
+    public final Expression value;
     public final TimeUnit timeUnit;
 
-    public DurationExpr(Expr value, TimeUnit timeUnit) {
+    public DurationExpression(Expression value, TimeUnit timeUnit) {
         this.value = value;
         this.timeUnit = timeUnit;
     }
@@ -152,10 +151,10 @@ class DurationExpr implements Expr {
     }
 }
 
-class LongExpr implements Expr {
+class LongExpression implements Expression {
     public final long value;
 
-    public LongExpr(long value) {
+    public LongExpression(long value) {
         this.value = value;
     }
 
@@ -164,10 +163,10 @@ class LongExpr implements Expr {
     }
 }
 
-class PropExpr implements Expr {
+class PropExpression implements Expression {
     public final String propName;
 
-    public PropExpr(String propName) {
+    public PropExpression(String propName) {
         this.propName = propName;
     }
 

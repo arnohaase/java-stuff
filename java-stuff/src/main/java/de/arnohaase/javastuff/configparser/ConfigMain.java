@@ -20,18 +20,18 @@ class DurationConfig {
     }
 
     public long getDurationMillis(String key) {
-        return eval (new ConfigParser(props.getProperty(key)).parseExpression());
+        return eval (new TimeoutParser(props.getProperty(key)).parseExpression());
     }
 
-    long eval (Expr expr) {
-        if (expr instanceof LongExpr)     return ((LongExpr) expr).value;
-        if (expr instanceof PropExpr)     return getDurationMillis (((PropExpr)expr).propName);
-        if (expr instanceof DurationExpr) return evalDuration ((DurationExpr) expr);
-        if (expr instanceof BinaryExpr)   return evalBinary ((BinaryExpr) expr);
+    long eval (Expression expr) {
+        if (expr instanceof LongExpression)     return ((LongExpression) expr).value;
+        if (expr instanceof PropExpression)     return getDurationMillis (((PropExpression)expr).propName);
+        if (expr instanceof DurationExpression) return evalDuration ((DurationExpression) expr);
+        if (expr instanceof BinaryExpression)   return evalBinary ((BinaryExpression) expr);
         throw new IllegalArgumentException ("unsupported expression " + expr);
     }
 
-    private long evalBinary (BinaryExpr expr) {
+    private long evalBinary (BinaryExpression expr) {
         switch (expr.operator) {
             case "+": return eval(expr.left) + eval(expr.right);
             case "-": return eval(expr.left) - eval(expr.right);
@@ -41,7 +41,7 @@ class DurationConfig {
         }
     }
 
-    private long evalDuration (DurationExpr expr) {
+    private long evalDuration (DurationExpression expr) {
         return expr.timeUnit.toMillis (eval (expr.value));
     }
 }
